@@ -1,3 +1,6 @@
+# ------------------------------------------------- Algorithmic Question (AQ) -------------------------------------------------
+
+from heapq import heappush, heappop
 def create_adjacency_list(flights, n):
     """
     Creates an adjacency list representation of a graph from a list of flights.
@@ -17,7 +20,6 @@ def create_adjacency_list(flights, n):
         # Append the neighbor and cost as a pair to the adjacency list of `u`
         adj_list[u].append([v, cost])
     return adj_list
-
 
 def min_cost_with_max_K_edges_DFS(G, currentNode, destination, max_stops, current_cost, min_cost_so_far, visited_nodes):
     """
@@ -89,7 +91,7 @@ def find_cheapest_route_DFS(n, flights, src, dst, k):
     # Set to track visited nodes
     visited = set()
 
-    # Perform a depth-first search to calculate the minimum cost
+    # Perform a depth-first search to calculate the minimum cost from src to dst with up to k stops
     calculated_min_cost = min_cost_with_max_K_edges_DFS(G, src, dst, k, 0, initial_min_cost, visited)
 
     # Return the result. If no valid route is found, return -1.
@@ -104,13 +106,13 @@ def min_cost_with_max_k_edges_pol(G, src, dst, k):
     using at most 'max_edges' edges in a graph with non-negative weights.
 
     Args:
-        - G (list of lists): The adjacency list representation of the graph;
-        - src (int): source node (integer index);
-        - dst (int): destination node (integer index);
-        - k (int): maximum number of edges allowed (integer).
+        G (list of lists): The adjacency list representation of the graph;
+        src (int): source node (integer index);
+        dst (int): destination node (integer index);
+        k (int): maximum number of edges allowed (integer).
 
     Returns:
-        - int: A numeric value representing the minimum cost, or float('inf') if no path with at most k edges exists.
+        int: A numeric value representing the minimum cost, or float('inf') if no path with at most k edges exists.
     """
     
     num_nodes = len(G)
@@ -164,7 +166,7 @@ def find_cheapest_route_pol(n, flights, src, dst, k):
     # Build the adjacency list
     G = create_adjacency_list(flights, n)
 
-    # Perform a depth-first search to calculate the minimum cost
+    # # Compute the minimum cost from src to dst using the dynamic programming method with up to k stops
     calculated_min_cost = min_cost_with_max_k_edges_pol(G, src, dst, k)
 
     # Return the result. If no valid route is found, return -1.
@@ -172,9 +174,6 @@ def find_cheapest_route_pol(n, flights, src, dst, k):
         return calculated_min_cost
 
     return -1
-
-
-from heapq import heappush, heappop
 
 def min_cost_with_max_K_edges_Dijkstra(G, src, dst, k):
     """
@@ -189,12 +188,12 @@ def min_cost_with_max_K_edges_Dijkstra(G, src, dst, k):
     Returns:
         int: Minimum cost to reach the destination, or -1 if no valid path exists.
     """
-    # Step 1: Initialize minDistanceK and priority_queue
+    # Initialize minDistanceK and priority_queue
     min_distance_K = [float('inf')] * len(G)
     min_distance_K[src] = 0
     priority_queue = [(0, src, 0, {src})]  # (current_cost, current_node, current_stops, visited_set)
 
-    # Step 2: Process the queue
+    # Process the queue
     while priority_queue:
         current_cost, current_node, current_stops, current_visited = heappop(priority_queue)
 
@@ -217,7 +216,7 @@ def min_cost_with_max_K_edges_Dijkstra(G, src, dst, k):
                         new_visited = current_visited | {neighbor}
                         heappush(priority_queue, (new_cost, neighbor, current_stops + 1, new_visited))
 
-    # Step 3: Return the result
+    # Return the result
     return min_distance_K[dst]
 
 def find_cheapest_route_Dijkstra(n, flights, src, dst, k):
@@ -237,8 +236,10 @@ def find_cheapest_route_Dijkstra(n, flights, src, dst, k):
     # Build the graph as an adjacency list
     G = create_adjacency_list(flights, n)
     
-    # Call the BFS function
+    # Compute the minimum cost from src to dst using the Dijkstra-like method with up to k stops
     min_cost = min_cost_with_max_K_edges_Dijkstra(G, src, dst, k)
+
+    # Return the result. If no valid route is found, return -1.
     if min_cost != float('inf'):
         return min_cost
     return -1
