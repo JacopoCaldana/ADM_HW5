@@ -12,6 +12,27 @@ import networkx as nx
 import itertools
 import random
 
+def manual_in_out_degrees(graph):
+    in_degrees = {}
+    out_degrees = {}
+
+    for node, destinations in graph.items():
+        # Update out-degree
+        out_degrees[node] = out_degrees.get(node, 0) + len(destinations)
+        
+        # Update in-degrees for all destinations
+        for dest in destinations:
+            in_degrees[dest] = in_degrees.get(dest, 0) + 1
+            if dest not in out_degrees:
+                out_degrees[dest] = 0  # Ensure all nodes appear in out-degrees
+    
+    # Ensure all nodes appear in in-degrees
+    for node in graph:
+        if node not in in_degrees:
+            in_degrees[node] = 0
+
+    return in_degrees, out_degrees
+
 def visualize_graph(graph,title,edge_color='black',node_color='lightblue',highlighted_edges=None):
     plt.figure(figsize=(12,8))
     pos=nx.spring_layout(graph)
